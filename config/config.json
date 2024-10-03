@@ -1,0 +1,19 @@
+{
+    "database": {
+        "mongodb": {
+            "uri": "mongodb+srv://ApiUser:UserPassword@apisign.f49wf.mongodb.net/?retryWrites=true&w=majority&appName=ApiSign",
+            "options": {
+                "useNewUrlParser": true,
+                "useUnifiedTopology": true
+            }
+        }
+    },
+    "server": {
+        "port": 3000,
+        "host": "localhost"
+    },
+    "logs": {
+        "successMessage": "Conexión a MongoDB exitosa",
+        "errorMessage": "Error conectando a MongoDB"
+    }
+}

@@ -1,19 +1,23 @@
 const mongoose = require('mongoose');
+const configDB = require("./config/config.json");
 
-const MONGODB = "mongodb+srv://ApiUser:UserPassword@apisign.f49wf.mongodb.net/?retryWrites=true&w=majority&appName=ApiSign";
+let exampleDB = mongoose.createConnection(configDB.database.mongodb.uri, configDB.database.mongodb.options);
 
-//  conectar a MongoDB
-const connectDB = async () => {
-    try {
-        await mongoose.connect(MONGODB, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-        console.log('Conexión a MongoDB exitosa');
-    } catch (err) {
-        console.error('Error conectando a MongoDB:', err);
-        process.exit(1); // Acabar proceso si de pronto se encuentra que hay algun error
-    }
-};
+// Evento cuando la conexión se realiza con éxito
+exampleDB.on('connected', () => {
+    console.log(`✅ Connection to database established successfully! => ${configDB.database.mongodb.uri.match(/@([^/]+)/)[1]}`);
+});
 
-module.exports = connectDB;
+// Evento cuando hay un error en la conexión
+exampleDB.on('error', (err) => {
+    console.log('❌');
+    console.error(`Database connection error: ${err}`);
+});
+
+// Evento cuando la conexión se cierra o se desconecta
+exampleDB.on('disconnected', () => {
+    console.log('ℹ️');
+    console.log(`Could not establish connection to the database ${configDB.database.mongodb.uri.match(/@([^/]+)/)[1]}`);
+});
+
+module.exports = { exampleDB };

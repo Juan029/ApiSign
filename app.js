@@ -1,23 +1,22 @@
 const express = require('express');
-const connectDB = require('./connection.js');
+
 const messageRoutes = require('./routes/messageRoutes');
+const config = require('./config/config.json');
 
 const app = express();
 
-// conectar db
-connectDB();
-
+// Middleware para parsear JSON
 app.use(express.json());
 
-// aqui enviamos los messages
+// Rutas de mensajes
 app.use('/api', messageRoutes);
 
-// primer ruta de prueba (localh)
+// Ruta de prueba (localhost)
 app.get('/', (req, res) => {
     res.send('Servidor Local Activo');
 });
 
-const port = 3000;
+const port = config.server.port;
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

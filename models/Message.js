@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const {exampleDB} = require('../connection.js')
+
 const messageSchema = new mongoose.Schema({
     message: {
         type: String,
@@ -11,6 +13,6 @@ const messageSchema = new mongoose.Schema({
     }
 });
 
-const Message = mongoose.model('Message', messageSchema);
+const Message = exampleDB.model('Message', messageSchema);
 
 module.exports = Message;
