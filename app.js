@@ -1,6 +1,7 @@
 const express = require('express');
 
-const messageRoutes = require('./routes/messageRoutes');
+const parametrizationRoutes = require('./routes/parametrizationRoutes')
+//const messageRoutes = require('./routes/messageRoutes');
 const config = require('./config/config.json');
 
 const app = express();
@@ -9,7 +10,7 @@ const app = express();
 app.use(express.json());
 
 // Rutas de mensajes
-app.use('/api', messageRoutes);
+app.use('/api', parametrizationRoutes);
 
 // Ruta de prueba (localhost)
 app.get('/', (req, res) => {
