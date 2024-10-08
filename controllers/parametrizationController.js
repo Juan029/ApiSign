@@ -1,39 +1,52 @@
 const centers = require('../models/centersParametrizationR355.js');
 
-const createParametrization = async (req, res) => {
+const createOrUpdateParametrization = async (req, res) => {
     try {
-        // Crear una nueva parametrización con todos los campos 
-        const newParametrization = new centers({
-            centerID: req.body.centerID,
-            numberSelectedEntryRnec: req.body.numberSelectedEntryRnec,
-            numberSelectedInSession: req.body.numberSelectedInSession,
-            alternativeMethod: req.body.alternativeMethod,
-            OutRnecPercentage: req.body.OutRnecPercentage,
-            OutRnecTime: req.body.OutRnecTime,
-            practicesToValidate: req.body.practicesToValidate,
-            classChoiceType: req.body.classChoiceType,
-            userToValidate: req.body.userToValidate,
-            enableInstructor: req.body.enableInstructor,
-            sendNotification: req.body.sendNotification,
-            enableValidationToStart: req.body.enableValidationToStart,
-            enableValidationToClose: req.body.enableValidationToClose,
-            excludeCategories: req.body.excludeCategories,
-            lastConfigDate: req.body.lastConfigDate
-        });
+        const parametrizationData = req.body;
 
-        // aqui la guardamos en nuestra DATABASE
-        await newParametrization.save();
+        // RRevisar si ya está ese CenterId
+        if (!parametrizationData.centerID) {
+            return res.status(400).json({
+                success: false,
+                error: 'centerID is required'
+            });
+        }
 
-        // SE LOGRÓ?
-        res.status(201).json({
-            centerMessage: `The centerParametrization has been created successfully`
+        // Agregar o actualizar lastConfigDate
+        parametrizationData.lastConfigDate = new Date();
+
+        // mirar si hay algun registro con ese centerid
+        const existingCenter = await centers.findOne({ centerID: parametrizationData.centerID });
+
+        let result;
+        if (existingCenter) {
+            // Actualizar registro existente
+            result = await centers.findOneAndUpdate(
+                { centerID: parametrizationData.centerID },
+                { $set: parametrizationData },
+                { new: true } // devolver el documento ya bien corregido
+            );
+        } else {
+            // Crear nuevo registro
+            const newCenter = new centers(parametrizationData);
+            result = await newCenter.save();
+        }
+
+        res.status(200).json({
+            success: true,
+            message: existingCenter ? 'Parametrization actualizada correctamente' : 'Parametrization creada correctamentte',
+            data: result
         });
 
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error('Error en la ejecución parametrizacion:', error);
+        res.status(400).json({
+            success: false,
+            error: error.message || 'Error n el proceso...'
+        });
     }
 };
 
 module.exports = {
-    createParametrization
+    createOrUpdateParametrization
 };

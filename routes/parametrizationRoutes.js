@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { createParametrization } = require('../controllers/parametrizationController.js');
+const { createOrUpdateParametrization } = require('../controllers/parametrizationController.js');
 
-router.post('/parametrization', createParametrization);
+router.post('/parametrization', createOrUpdateParametrization);
 
 module.exports = router;
